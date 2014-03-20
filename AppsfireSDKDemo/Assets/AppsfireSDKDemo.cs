@@ -80,8 +80,8 @@ public class AppsfireSDKDemo : MonoBehaviour
 		// af ad sdk - enable debug mode to see an ad each time
 		// we suggest you to only keep it for debug builds!
 		// otherwise, don't forget to comment/remove it before any store submission!!!
-        if (Debug.isDebugBuild)
-			AppsfireAdSDK.SetDebugModeEnabled(true);
+		#warning enable it for testing, disable it for store submission!!
+		AppsfireAdSDK.SetDebugModeEnabled(true);
 		
 		// af ad sdk - prepare here, so ad will be available sooner!
 		AppsfireAdSDK.Prepare();
