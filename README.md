@@ -27,30 +27,39 @@ Otherwise, you can directly copy paste the files from /AppsfireSDKDemo/Assets/Pl
 ![appsfire sdk unity import step 1](./images/unity-plugin-import-manually.png)
   
 # III] Implementation
-There are 4 important files that you need to be aware of:
+There are 5 important files that you need to be aware of:
 
 * **AppsfireSDKPrefab.prefab** : prefab to include in your project. It'll be used for the communication between our library and Unity.
-* **AppsfireSDK.cs** : the "engage" library (e.g. displaying notifications view, handling push system, ...).
+* **AppsfireSDK.cs** : the "base" library (e.g. initialize the library).
+* **AppsfireEngageSDK.cs** : the "engage" library (e.g. displaying notifications view, handling push system, ...).
 * **AppsfireAdSDK.cs** : the "monetization" library (e.g. displaying ads to do money).
 * **AppsfireSDKEvents.cs** : subscribing and receiving any event related the "engage" and "monetization" library.
 
 For the following example, <u>we recommend you to take a look at AppsfireSDKDemo.cs</u> file which is in the demo project included in the zip (with the unitypackage).
 
 ## Step 1: Include the prefab
-**Make sure that the AppsfireSDKPrefab.prefab is included in your project.** It's required to correctly initialize AppsfireSDK and get events.
+
+Some actions are required to correctly initialize AppsfireSDK and get events.
+**So please make sure that:**
+
+* The prefab `AppsfireSDKPrefab.prefab` is included in your project.
+* The script `AppsfireSDKEvents.cs` is added to your prefab
+
+![appsfire sdk unity setup prefab](./images/unity-plugin-setup-prefab.png)
+
 
 ## Step 2: Specify the API key
 In your **Start()** method, you need to add a required initialization method where you put your **API KEY**. If you don't have it yet, please check the general documentation which explains how to get it thanks to your dashboard.
 
-Once you have it, just add the following line:
+As second parameter, you should precise what features you want to enable. For exaemple, if you plan to only use monetization SDK (to display ads), then you should put `AFSDKFeature.AFSDKFeatureMonetization`.
 
 	// af sdk - connect with your api key
-	AppsfireSDK.ConnectWithAPIKey("YOUR API KEY");
+	AppsfireSDK.ConnectWithAPIKey("YOUR API KEY", AFSDKFeature.AFSDKFeatureMonetization);
 	
 ## Step 3: Display the notifications wall
 To display the notifications wall, you just have to call the following method.
 
-	AppsfireSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentDefault, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
+	AppsfireEngageSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentDefault, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
 
 You can customize the experience by specifying custom colors. <u>But it's best to add the following lines in the Start() method!!!</u>
 
@@ -60,16 +69,12 @@ You can customize the experience by specifying custom colors. <u>But it's best t
 	// these values are default colors, you can customize with the colors of your app
 	backgroundColor = new AF_RGBA(66.0/255.0, 67.0/255.0, 69.0/255.0, 1.0);
 	textColor = new AF_RGBA(1.0, 1.0, 1.0, 1.0);
-	AppsfireSDK.SetBackgroundAndTextColor(backgroundColor, textColor);
+	AppsfireEngageSDK.SetBackgroundAndTextColor(backgroundColor, textColor);
 	
 ## Step 4: Display Ads
 It's easy to display ads during breakout sessions.
-First, we recommend you to add this line in the Start() method. It allows our SDK to download ads and any eventual asset and be ready as soon as possible.
-
-	// af ad sdk - prepare here, so ad will be available sooner!
-	AppsfireAdSDK.Prepare();
 	
-Then, when you are ready to display an ad, you just have to check if any is available, and then request it!
+When you are ready to display an ad, you just have to check if any is available, and then request it!
 
 	if (AppsfireAdSDK.IsThereAModalAdAvailable())
 		AppsfireAdSDK.RequestModalAd(AFAdSDKModalType.AFAdSDKModalTypeSushi);
@@ -78,17 +83,17 @@ You can be alerted that an ad is available thanks to an event. So you can direct
 
 	void OnEnable()
 	{
-		AppsfireSDKEvents.afsdkadModalAdIsReadyForRequest += this.afsdkadModalAdIsReadyForRequest;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndAvailable += this.afsdkadModalAdsRefreshedAndAvailable;
 	}
 	
 	void OnDisable()
 	{
-		AppsfireSDKEvents.afsdkadModalAdIsReadyForRequest -= this.afsdkadModalAdIsReadyForRequest;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndAvailable -= this.afsdkadModalAdsRefreshedAndAvailable;
 	}
 	
-	public void afsdkadModalAdIsReadyForRequest()
+	public void afsdkadModalAdsRefreshedAndAvailable()
 	{
-		Debug.Log("Appsfire Ad SDK - Modal Ad Is Ready For Request");
+		Debug.Log("Appsfire Ad SDK - Modal Ad Refreshed And Available For Request");
 		if (AppsfireAdSDK.IsThereAModalAdAvailable(AFAdSDKModalType.AFAdSDKModalTypeUraMaki) == AFAdSDKAdAvailability.AFAdSDKAdAvailabilityYes) {
 			AppsfireAdSDK.RequestModalAd(AFAdSDKModalType.AFAdSDKModalTypeSushi);
 		}
@@ -119,10 +124,11 @@ Here is an example if you want to know when the badge counter is updated.
 If you don't get any event, it's likely that the prefab isn't used in your project.
 
 
-# IV] Xcode build
+# IV] Xcode and frameworks
 
-When you build the Xcode projet, you'll have to manually add some missing frameworks. Open Xcode, go in your project settings, then select "Build Phases" and add the frameworks in "Link Binary With Libraries"
+We're using the projet `XUPorter` to automatically add some frameworks to your Xcode project. If you're building the demo project, it should directly work! (you can find the plugin in /Assets/Editor/XUPorter).
 
+When you're implementing the sdk into your project, you can either use XUPorter, or manually add the following frameworks after the build that creates the Xcode projet:
 * Accelerate
 * AdSupport
 * Security

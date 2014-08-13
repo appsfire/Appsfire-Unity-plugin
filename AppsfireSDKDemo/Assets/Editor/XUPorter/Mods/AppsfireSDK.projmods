@@ -1,0 +1,11 @@
+{
+    "group": "",
+    "libs": [],
+    "frameworks": ["Security.framework", "AdSupport.framework", "Accelerate.framework", "StoreKit.framework"],
+    "headerpaths": [],
+    "files":   [],
+    "folders": [],
+    "excludes": [],
+    "linker_flags": [],
+	"compiler_flags": []
+}

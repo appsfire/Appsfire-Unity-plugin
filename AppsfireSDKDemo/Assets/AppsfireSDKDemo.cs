@@ -17,13 +17,17 @@ public class AppsfireSDKDemo : MonoBehaviour
 		// base sdk events
 		AppsfireSDKEvents.afsdkIsInitializing += this.afsdkIsInitializing;
 		AppsfireSDKEvents.afsdkIsInitialized += this.afsdkIsInitialized;
+		
+		// engage sdk events
 		AppsfireSDKEvents.afsdkNotificationsNumberChanged += this.afsdkNotificationsNumberChanged;
 		AppsfireSDKEvents.afsdkPanelWasPresented += this.afsdkPanelWasPresented;
 		AppsfireSDKEvents.afsdkPanelWasDismissed += this.afsdkPanelWasDismissed;
 		
 		// ad sdk events
-		AppsfireSDKEvents.afsdkadDidInitialize += this.afsdkadDidInitialize;
-		AppsfireSDKEvents.afsdkadModalAdIsReadyForRequest += this.afsdkadModalAdIsReadyForRequest;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndAvailable += this.afsdkadModalAdsRefreshedAndAvailable;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndNotAvailable += this.afsdkadModalAdsRefreshedAndNotAvailable;
+		
+		// modal ad events
 		AppsfireSDKEvents.afsdkadModalAdRequestDidFailWithErrorCode += this.afsdkadModalAdRequestDidFailWithErrorCode;
 		AppsfireSDKEvents.afsdkadModalAdWillAppear += this.afsdkadModalAdWillAppear;
 		AppsfireSDKEvents.afsdkadModalAdDidAppear += this.afsdkadModalAdDidAppear;
@@ -36,13 +40,17 @@ public class AppsfireSDKDemo : MonoBehaviour
 		// base sdk events
 		AppsfireSDKEvents.afsdkIsInitializing -= this.afsdkIsInitializing;
 		AppsfireSDKEvents.afsdkIsInitialized -= this.afsdkIsInitialized;
+		
+		// engage sdk events
 		AppsfireSDKEvents.afsdkNotificationsNumberChanged -= this.afsdkNotificationsNumberChanged;
 		AppsfireSDKEvents.afsdkPanelWasPresented -= this.afsdkPanelWasPresented;
 		AppsfireSDKEvents.afsdkPanelWasDismissed -= this.afsdkPanelWasDismissed;
 		
 		// ad sdk events
-		AppsfireSDKEvents.afsdkadDidInitialize -= this.afsdkadDidInitialize;
-		AppsfireSDKEvents.afsdkadModalAdIsReadyForRequest -= this.afsdkadModalAdIsReadyForRequest;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndAvailable -= this.afsdkadModalAdsRefreshedAndAvailable;
+		AppsfireSDKEvents.afsdkadModalAdsRefreshedAndNotAvailable -= this.afsdkadModalAdsRefreshedAndNotAvailable;
+		
+		// modal ad events
 		AppsfireSDKEvents.afsdkadModalAdRequestDidFailWithErrorCode -= this.afsdkadModalAdRequestDidFailWithErrorCode;
 		AppsfireSDKEvents.afsdkadModalAdWillAppear -= this.afsdkadModalAdWillAppear;
 		AppsfireSDKEvents.afsdkadModalAdDidAppear -= this.afsdkadModalAdDidAppear;
@@ -58,33 +66,27 @@ public class AppsfireSDKDemo : MonoBehaviour
 		//
 		numberOfNotifications = 0;
 		
-		// af sdk - set features you plan to use
-		AppsfireSDK.setFeatures(AFSDKFeature.AFSDKFeatureEngage | AFSDKFeature.AFSDKFeatureMonetization);
-						
-		// af sdk - connect with your api key
-		#error please enter your api key here!
-		AppsfireSDK.ConnectWithAPIKey("");
-		
-		// af sdk - handle badge count locally and remotely
-		AppsfireSDK.HandleBadgeCountLocallyAndRemotely(true);
-		#if UNITY_IPHONE
-			NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert | RemoteNotificationType.Badge | RemoteNotificationType.Sound);
-		#endif
-		
-		// af sdk - customize background and text colors
-		// these values are default colors, you can customize with the colors of your app
-		backgroundColor = new AF_RGBA(66.0/255.0, 67.0/255.0, 69.0/255.0, 1.0);
-		textColor = new AF_RGBA(1.0, 1.0, 1.0, 1.0);
-		AppsfireSDK.SetBackgroundAndTextColor(backgroundColor, textColor);
-		
 		// af ad sdk - enable debug mode to see an ad each time
 		// we suggest you to only keep it for debug builds!
 		// otherwise, don't forget to comment/remove it before any store submission!!!
 		#warning enable it for testing, disable it for store submission!!
 		AppsfireAdSDK.SetDebugModeEnabled(true);
+								
+		// af sdk - connect with your api key
+		#error please enter your api key here!
+		AppsfireSDK.ConnectWithAPIKey("", AFSDKFeature.AFSDKFeatureEngage | AFSDKFeature.AFSDKFeatureMonetization);
 		
-		// af ad sdk - prepare here, so ad will be available sooner!
-		AppsfireAdSDK.Prepare();
+		// af engage sdk - handle badge count locally and remotely
+		AppsfireEngageSDK.HandleBadgeCountLocallyAndRemotely(true);
+		#if UNITY_IPHONE
+			NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert | RemoteNotificationType.Badge | RemoteNotificationType.Sound);
+		#endif
+		
+		// af engage sdk - customize background and text colors
+		// these values are default colors, you can customize with the colors of your app
+		backgroundColor = new AF_RGBA(66.0/255.0, 67.0/255.0, 69.0/255.0, 1.0);
+		textColor = new AF_RGBA(1.0, 1.0, 1.0, 1.0);
+		AppsfireEngageSDK.SetBackgroundAndTextColor(backgroundColor, textColor);
     }
 
 	void Update()
@@ -126,12 +128,12 @@ public class AppsfireSDKDemo : MonoBehaviour
 		if (AppsfireSDK.IsInitialized())
 			text += " ("+ numberOfNotifications +")";
         if (GUI.Button(new Rect(centerX - buttonWidth / 2.0f, minY, buttonWidth, buttonHeight), text, buttonStyle))
-			AppsfireSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentDefault, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
+			AppsfireEngageSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentDefault, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
 		minY += buttonHeight + buttonMargin;
 
 		// button open feedback
         if (GUI.Button(new Rect(centerX - buttonWidth / 2.0f, minY, buttonWidth, buttonHeight), "Open Panel for Feedback", buttonStyle))
-			AppsfireSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentFeedbackOnly, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
+			AppsfireEngageSDK.PresentPanelForContentAndStyle(AFSDKPanelContent.AFSDKPanelContentFeedbackOnly, AFSDKPanelStyle.AFSDKPanelStyleFullscreen);
 		minY += buttonHeight + buttonMargin;
 		
 		// button request modal ad (sushi)
@@ -166,33 +168,27 @@ public class AppsfireSDKDemo : MonoBehaviour
 	// notifications count was updated
 	public void afsdkNotificationsNumberChanged()
 	{
-		Debug.Log("Appsfire SDK - Number of Notifications was updated");
-		numberOfNotifications = AppsfireSDK.NumberOfPendingNotifications();
+		Debug.Log("Appsfire Engage SDK - Number of Notifications was updated");
+		numberOfNotifications = AppsfireEngageSDK.NumberOfPendingNotifications();
 	}
 	
 	// panel was presented
 	public void afsdkPanelWasPresented()
 	{
-		Debug.Log("Appsfire SDK - Panel was presented");		
+		Debug.Log("Appsfire Engage SDK - Panel was presented");		
 	}
 	
 	// panel was dismissed
 	public void afsdkPanelWasDismissed()
 	{
-		Debug.Log("Appsfire SDK - Panel was dismissed");
-	}
-	
-	// ad sdk did initialize
-	public void afsdkadDidInitialize()
-	{
-		Debug.Log("Appsfire Ad SDK - Did Initialize");
+		Debug.Log("Appsfire Engage SDK - Panel was dismissed");
 	}
 
-	// modal ad is ready for request
-	public void afsdkadModalAdIsReadyForRequest()
+	// modal ads refreshed and available
+	public void afsdkadModalAdsRefreshedAndAvailable()
 	{
-		Debug.Log("Appsfire Ad SDK - Modal Ad Is Ready For Request");
-		// you could directly present the modal ad here
+		Debug.Log("Appsfire Ad SDK - Modal Ad Refreshed And Available For Request");
+		// you could directly present a modal ad here
 		/*
 		if (AppsfireAdSDK.IsThereAModalAdAvailable(AFAdSDKModalType.AFAdSDKModalTypeUraMaki) == AFAdSDKAdAvailability.AFAdSDKAdAvailabilityYes) {
 			AppsfireAdSDK.RequestModalAd(AFAdSDKModalType.AFAdSDKModalTypeSushi);
@@ -200,6 +196,12 @@ public class AppsfireSDKDemo : MonoBehaviour
 		*/
 	}
 
+	// modal ads refreshed and none is available
+	public void afsdkadModalAdsRefreshedAndNotAvailable()
+	{
+		Debug.Log("Appsfire Ad SDK - Modal Ad Refreshed And None Is Available For Request");
+	}
+	
 	// modal ad request did fail
 	public void afsdkadModalAdRequestDidFailWithErrorCode(AFSDKErrorCode errorCode)
 	{

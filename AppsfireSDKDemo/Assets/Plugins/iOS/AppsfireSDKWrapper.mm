@@ -9,7 +9,7 @@ void UnitySendDeviceToken(NSData* deviceToken);
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
     
-    [AppsfireSDK registerPushToken:deviceToken];
+    [AppsfireEngageSDK registerPushToken:deviceToken];
     
     UnitySendDeviceToken(deviceToken);
     
@@ -81,17 +81,19 @@ void UnitySendDeviceToken(NSData* deviceToken);
 
 #pragma mark - Ad Delegate
 
-- (void)adUnitDidInitialize {
+- (void)modalAdsRefreshedAndAvailable {
 	
-	UnitySendMessage([_callbackHandlerName UTF8String], "AFSDKAdDidInitialize", "");
+	UnitySendMessage([_callbackHandlerName UTF8String], "AFSDKAdModalAdsRefreshedAndAvailable", "");
 	
 }
 
-- (void)modalAdIsReadyForRequest {
+- (void)modalAdsRefreshedAndNotAvailable {
 	
-	UnitySendMessage([_callbackHandlerName UTF8String], "AFSDKAdModalAdIsReadyForRequest", "");
+	UnitySendMessage([_callbackHandlerName UTF8String], "AFSDKAdModalAdsRefreshedAndNotAvailable", "");
 	
 }
+
+#pragma mark - Modal Delegate
 
 - (void)modalAdRequestDidFailWithError:(NSError *)error {
 	
@@ -134,7 +136,7 @@ void afsdk_iniAndSetCallbackHandler(const char* handlerName) {
 	
 }
 
-bool afsdk_connectWithAPIKey(const char *apikey) {
+bool afsdk_connectWithAPIKey(const char *apikey, AFSDKFeature features) {
 	
 	NSString *apikeyString;
 	
@@ -142,7 +144,7 @@ bool afsdk_connectWithAPIKey(const char *apikey) {
 	apikeyString = (apikey != NULL) ? [NSString stringWithUTF8String:apikey] : nil;
 	
 	//
-    return [AppsfireSDK connectWithAPIKey:apikeyString];
+    return ([AppsfireSDK connectWithSDKToken:apikeyString features:features parameters:nil] == nil);
 
 }
 
@@ -154,61 +156,55 @@ bool afsdk_isInitialized() {
 
 void afsdk_pause() {
 	
-	[AppsfireSDK pause];
+	[AppsfireEngageSDK pause];
 	
 }
 
 void afsdk_resume() {
 	
-	[AppsfireSDK resume];
-	
-}
-
-void afsdk_setFeatures(AFSDKFeature features) {
-	
-	[AppsfireSDK setFeatures:features];
+	[AppsfireEngageSDK resume];
 	
 }
 
 void afsdk_handleBadgeCountLocally(bool handleLocally) {
 	
-	[AppsfireSDK handleBadgeCountLocally:handleLocally];
+	[AppsfireEngageSDK handleBadgeCountLocally:handleLocally];
 	
 }
 
 void afsdk_handleBadgeCountLocallyAndRemotely(bool handleLocallyAndRemotely) {
 	
-	[AppsfireSDK handleBadgeCountLocallyAndRemotely:handleLocallyAndRemotely];
+	[AppsfireEngageSDK handleBadgeCountLocallyAndRemotely:handleLocallyAndRemotely];
 	
 }
 	
 bool afsdk_presentPanelForContentAndStyle(AFSDKPanelContent content, AFSDKPanelStyle style) {
 	
-	return ([AppsfireSDK presentPanelForContent:content withStyle:style] == nil);
+	return ([AppsfireEngageSDK presentPanelForContent:content withStyle:style] == nil);
 	
 }
 
 void afsdk_dismissPanel() {
 	
-	[AppsfireSDK dismissPanel];
+	[AppsfireEngageSDK dismissPanel];
 	
 }
 
 bool afsdk_isDisplayed() {
 	
-	return [AppsfireSDK isDisplayed];
+	return [AppsfireEngageSDK isDisplayed];
 	
 }
 
 void afsdk_openSDKNotificationID(int notificationID) {
 	
-	[AppsfireSDK openSDKNotificationID:notificationID];
+	[AppsfireEngageSDK openSDKNotificationID:notificationID];
 	
 }
 
 void afsdk_setBackgroundAndTextColor (struct AF_RGBA backgroundColor, struct AF_RGBA textColor) {
 
-	[AppsfireSDK setBackgroundColor:[UIColor colorWithRed:backgroundColor.red green:backgroundColor.green blue:backgroundColor.blue alpha:backgroundColor.alpha] 
+	[AppsfireEngageSDK setBackgroundColor:[UIColor colorWithRed:backgroundColor.red green:backgroundColor.green blue:backgroundColor.blue alpha:backgroundColor.alpha] 
 				textColor:[UIColor colorWithRed:textColor.red green:textColor.green blue:textColor.blue alpha:textColor.alpha]];
 	
 }
@@ -240,7 +236,7 @@ void afsdk_setCustomKeysValues(const char*  attributes) {
     }
     
     //
-    [AppsfireSDK setCustomKeysValues:oAttributes];
+    [AppsfireEngageSDK setCustomKeysValues:oAttributes];
 	
 }
 
@@ -252,19 +248,19 @@ bool afsdk_setUserEmailAndModifiable(const char* email, bool modifiable) {
 	emailString = (email != NULL) ? [NSString stringWithUTF8String:email] : nil;
 	
 	//
-	return [AppsfireSDK setUserEmail:emailString isModifiable:modifiable];
+	return [AppsfireEngageSDK setUserEmail:emailString isModifiable:modifiable];
 	
 }
 
 void afsdk_showFeedbackButton(bool showButton) {
 	
-	[AppsfireSDK setShowFeedbackButton:showButton];
+	[AppsfireEngageSDK setShowFeedbackButton:showButton];
 	
 }
 
 int afsdk_numberOfPendingNotifications() {
 	
-	return [AppsfireSDK numberOfPendingNotifications];
+	return [AppsfireEngageSDK numberOfPendingNotifications];
 	
 }
 
@@ -282,7 +278,7 @@ void afsdkad_prepare() {
 
 bool afsdkad_isInitialized() {
 	
-	return [AppsfireAdSDK isInitialized];
+	return [AppsfireSDK isInitialized];
 	
 }
 
@@ -300,7 +296,7 @@ void afsdkad_setDebugModeEnabled(bool use) {
 
 void afsdkad_requestModalAd(AFAdSDKModalType modalType) {
 	
-    [AppsfireAdSDK requestModalAd:modalType withController:[UIApplication sharedApplication].keyWindow.rootViewController];
+    [AppsfireAdSDK requestModalAd:modalType withController:[UIApplication sharedApplication].keyWindow.rootViewController withDelegate:[AppsfireSDKWrapper sharedInstance]];
 	
 }
 

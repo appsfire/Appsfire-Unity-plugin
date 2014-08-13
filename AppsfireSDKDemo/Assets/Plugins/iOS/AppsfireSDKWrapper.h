@@ -1,4 +1,5 @@
 #import "AppsfireSDK.h"
+#import "AppsfireEngageSDK.h"
 #import "AppsfireAdSDK.h"
 #import <Foundation/Foundation.h>
 
@@ -9,7 +10,7 @@ typedef struct AF_RGBA {
     double alpha;
 } AF_RGBA;
 
-@interface AppsfireSDKWrapper : NSObject <AppsfireAdSDKDelegate>
+@interface AppsfireSDKWrapper : NSObject <AppsfireAdSDKDelegate, AFAdSDKModalDelegate>
 
 //
 + (AppsfireSDKWrapper *)sharedInstance;
@@ -23,13 +24,13 @@ extern "C" {
 	
 	// general
 	void afsdk_iniAndSetCallbackHandler(const char* handlerName);
-		
-	// base
-	bool afsdk_connectWithAPIKey(const char* apikey);
+	bool afsdk_connectWithAPIKey(const char* apikey, AFSDKFeature features);
 	bool afsdk_isInitialized();
+	void afsdk_resetCache();
+	
+	// engage
 	void afsdk_pause();
 	void afsdk_resume();
-	void afsdk_setFeatures(AFSDKFeature features);
 	void afsdk_handleBadgeCountLocally(bool handleLocally);
 	void afsdk_handleBadgeCountLocallyAndRemotely(bool handleLocallyAndRemotely);
 	bool afsdk_presentPanelForContentAndStyle(AFSDKPanelContent content, AFSDKPanelStyle style);
@@ -41,7 +42,6 @@ extern "C" {
 	bool afsdk_setUserEmailAndModifiable(const char* email, bool modifiable);
 	void afsdk_showFeedbackButton(bool showButton);
 	int afsdk_numberOfPendingNotifications();
-	void afsdk_resetCache();
 	
 	// advertising
 	void afsdkad_prepare();

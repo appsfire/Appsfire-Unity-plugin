@@ -6,20 +6,69 @@ using System.Runtime.InteropServices;
 
 public enum AFSDKErrorCode
 {
-    // base sdk
-    AFSDKErrorCodeUnknown,                              // unknown
-    AFSDKErrorCodeLibraryNotInitialized,                // library isn't initialized yet
-    AFSDKErrorCodeInternetNotReachable,                 // internet isn't reachable (and is required)
-    AFSDKErrorCodeNeedsApplicationDelegate,             // you need to set the application delegate to proceed
-    // advertising sdk / requesting a modal ad
-    AFSDKErrorCodeAdvertisingNoAd,                      // no ad available
-    AFSDKErrorCodeAdvertisingBadCall,                   // the request call isn't appropriate
-    AFSDKErrorCodeAdvertisingAlreadyDisplayed,          // an ad is currently displayed for this format
-    AFSDKErrorCodeAdvertisingCanceledByDevelopper,      // the request was canceled by the developer
-    // base sdk / presenting panel
-    AFSDKErrorCodePanelAlreadyDisplayed,                // the panel is already displayed
-    // base sdk / open notification
-    AFSDKErrorCodeOpenNotificationNotFound              // the notification wasn't found
+    // General
+    /** Unknown */
+    AFSDKErrorCodeUnknown,
+    /** Library isn't initialized yet */
+    AFSDKErrorCodeLibraryNotInitialized,
+    /** Internet isn't reachable (and is required) */
+    AFSDKErrorCodeInternetNotReachable,
+    /** You need to set the application delegate to proceed */
+    AFSDKErrorCodeNeedsApplicationDelegate,
+    
+    // Initialization
+    /** Missing the API Key */
+    AFSDKErrorCodeInitializationMissingAPIKey,
+    /** Missing the Features bitmask */
+    AFSDKErrorCodeInitializationMissingFeatures,
+    
+    // Advertising sdk
+    /** No ad available */
+    AFSDKErrorCodeAdvertisingNoAd,
+    /** The request call isn't appropriate */
+    AFSDKErrorCodeAdvertisingBadCall,
+    /** An ad is currently displayed for this format */
+    AFSDKErrorCodeAdvertisingAlreadyDisplayed,
+    /** The request was canceled by the developer */
+    AFSDKErrorCodeAdvertisingCanceledByDevelopper,
+    
+    // Engage sdk
+    /** The panel is already displayed */
+    AFSDKErrorCodePanelAlreadyDisplayed,
+    /** The notification wasn't found */
+    AFSDKErrorCodeOpenNotificationNotFound,
+    
+    // In-app purchase
+    /** The property object is not valid */
+    AFSDKErrorCodeIAPPropertyNotValid,
+    /** The property object is missing a title attribute */
+    AFSDKErrorCodeIAPTitleMissing,
+    /** The property object is missing a message attribute */
+    AFSDKErrorCodeIAPMessageMissing,
+    /** The property object is missing a cancel button title attribute */
+    AFSDKErrorCodeIAPCancelButtonTitleMissing,
+    /** The property object is missing a buy button title attribute */
+    AFSDKErrorCodeIAPBuyButtonTitleMissing,
+    /** The property object is missing a buy block handler */
+    AFSDKErrorCodeIAPBuyBlockMissing,
+    
+    // Mediation sdk
+    /** The placement id is not valid. */
+    AFSDKErrorCodeMediationPlacementIdNotValid,
+    /** The payload received for the placement id is not valid */
+    AFSDKErrorCodeMediationPayloadNotValid,
+    /** The received custom class does not exist */
+    AFSDKErrorCodeMediationCustomClassNotFound,
+    /** The received custom class does not conform to protocol */
+    AFSDKErrorCodeMediationCustomClassNotConformToProtocol,
+    /** The received placement id does not have any ads to show */
+    AFSDKErrorCodeMediationNoAds,
+    /** The ad request timed out */
+    AFSDKErrorCodeMediationAdRequestTimeout,
+    /** The interstitial has expired, you need to create a new one */
+    AFSDKErrorCodeMediationInterstitialExpired,
+    /** The interstitial has already been used, you need to create a new one */
+    AFSDKErrorCodeMediationInterstitialAlreadyUsed,
 }
 
 public class AppsfireSDKEvents : MonoBehaviour {
@@ -39,6 +88,8 @@ public class AppsfireSDKEvents : MonoBehaviour {
 	public delegate void AFSDKIsInitializedHandler();
 	public static event AFSDKIsInitializedHandler afsdkIsInitialized;
 	
+	/* Engage SDK Events */
+	
 	// notifications count was updated
 	public delegate void AFSDKNotificationsNumberChangedHandler();
 	public static event AFSDKNotificationsNumberChangedHandler afsdkNotificationsNumberChanged;
@@ -52,14 +103,16 @@ public class AppsfireSDKEvents : MonoBehaviour {
 	public static event AFSDKPanelWasDismissedHandler afsdkPanelWasDismissed;
 	
 	/* Advertising SDK Delegate */
-
-	// did initialize
-	public delegate void AFSDKAdDidInitializeHandler();
-	public static event AFSDKAdDidInitializeHandler afsdkadDidInitialize;
 	
-	// modal ad is ready for request
-	public delegate void AFSDKAdModalAdIsReadyForRequestHandler();
-	public static event AFSDKAdModalAdIsReadyForRequestHandler afsdkadModalAdIsReadyForRequest;
+	// modal ads refreshed and available
+	public delegate void AFSDKAdModalAdsRefreshedAndAvailableHandler();
+	public static event AFSDKAdModalAdsRefreshedAndAvailableHandler afsdkadModalAdsRefreshedAndAvailable;
+
+	// modal ads refreshed and none is available
+	public delegate void AFSDKAdModalAdsRefreshedAndNotAvailableHandler();
+	public static event AFSDKAdModalAdsRefreshedAndNotAvailableHandler afsdkadModalAdsRefreshedAndNotAvailable;
+
+	/* Modal Ad Delegate */
 
 	// modal ad request did fail with error code
 	public delegate void AFSDKAdModalAdRequestDidFailWithErrorCodeHandler(AFSDKErrorCode errorCode);
@@ -97,7 +150,7 @@ public class AppsfireSDKEvents : MonoBehaviour {
 	}  
 	
 	/*
-	 *	Events
+	 *	Events Base SDK
 	 */
 	
 	// sdk is initializing
@@ -113,6 +166,10 @@ public class AppsfireSDKEvents : MonoBehaviour {
 		if (afsdkIsInitialized != null)
 			afsdkIsInitialized();		
 	}
+	
+	/*
+	 *	Events Engage SDK
+	 */
 	
 	// notifications count was updated
 	public void AFSDKNotificationsNumberChanged(string empty)
@@ -136,22 +193,26 @@ public class AppsfireSDKEvents : MonoBehaviour {
 	}
 	
 	/*
-	 *	Events
+	 *	Events Monetization SDK
 	 */
 	
-	// sdk did initialize
-	public void AFSDKAdDidInitialize(string empty)
+	// modal ads refreshed and available
+	public void AFSDKAdModalAdsRefreshedAndAvailable(string empty)
 	{
-		if (afsdkadDidInitialize != null)
-			afsdkadDidInitialize();
+		if (afsdkadModalAdsRefreshedAndAvailable != null)
+			afsdkadModalAdsRefreshedAndAvailable();
 	}
 	
-	// modal ad is ready for request
-	public void AFSDKAdModalAdIsReadyForRequest(string empty)
+	// modal ads refreshed and none is available
+	public void AFSDKAdModalAdsRefreshedAndNotAvailable(string empty)
 	{
-		if (afsdkadModalAdIsReadyForRequest != null)
-			afsdkadModalAdIsReadyForRequest();
+		if (afsdkadModalAdsRefreshedAndNotAvailable != null)
+			afsdkadModalAdsRefreshedAndNotAvailable();
 	}
+	
+	/*
+	 *	Events Modal Ad
+	 */
 	
 	// modal ad request did fail witht error code
 	public void AFSDKAdModalAdRequestDidFailWithErrorCode(string errorCode)
