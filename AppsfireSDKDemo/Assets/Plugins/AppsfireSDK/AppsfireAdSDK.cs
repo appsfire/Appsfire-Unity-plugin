@@ -24,10 +24,10 @@ public class AppsfireAdSDK : MonoBehaviour {
 	
 	[DllImport ("__Internal")]
 	private static extern void afsdkad_setDebugModeEnabled(bool use);
-		
+	
 	[DllImport ("__Internal")]
 	private static extern void afsdkad_requestModalAd(AFAdSDKModalType modalType);
-		
+	
 	[DllImport ("__Internal")]
 	private static extern AFAdSDKAdAvailability afsdkad_isThereAModalAdAvailable(AFAdSDKModalType modalType);
 
@@ -36,13 +36,7 @@ public class AppsfireAdSDK : MonoBehaviour {
 	
 	[DllImport ("__Internal")]
 	private static extern bool afsdkad_isModalAdDisplayed();
-		
-	[DllImport ("__Internal")]
-	private static extern void afsdkad_prepare();
-
-	[DllImport ("__Internal")]
-	private static extern bool afsdkad_isInitialized();
-
+	
 	/*!
 	 *  @brief Specify if the library should use the in-app overlay when possible.
 	 *
@@ -122,34 +116,6 @@ public class AppsfireAdSDK : MonoBehaviour {
 	{
 		if (Application.platform == RuntimePlatform.IPhonePlayer)
 			return afsdkad_isModalAdDisplayed();
-		return false;
-	}
-		
-	/*!
-	 *  @brief Green light so the library can prepare itself.
-	 *
-	 *  @note If not already done, this method is automatically called at during a modal ad request.
-	 */
-	[System.Obsolete]
-	public static void Prepare()
-	{
-		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			afsdkad_prepare();
-	}
-	
-	/*!
-	 *  @brief Ask if AdUnit is initialized
-	 *
-	 *  @note There are various checks like waiting for Appboster SDK initialization, internet connection ...
-	 *  Usually the library is quickly initialized ( < 1s ).
-	 *
-	 *  @return `YES` if the library is initialized, `NO` if the library isn't yet.
-	 */
-	[System.Obsolete]
-	public static bool IsInitialized()
-	{
-		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			return afsdkad_isInitialized();
 		return false;
 	}
 	

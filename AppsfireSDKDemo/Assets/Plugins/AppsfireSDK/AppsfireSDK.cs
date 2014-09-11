@@ -19,9 +19,6 @@ public class AppsfireSDK : MonoBehaviour {
 	
 	[DllImport ("__Internal")]
 	private static extern bool afsdk_isInitialized();
-
-	[DllImport ("__Internal")]
-	private static extern void afsdk_resetCache();
 	 
 	/*!
 	 *  @brief Set up the Appsfire SDK with your API key.
@@ -49,18 +46,6 @@ public class AppsfireSDK : MonoBehaviour {
 		if (Application.platform == RuntimePlatform.IPhonePlayer)
 			return afsdk_isInitialized();
 		return false;
-	}
-		
-	/*!
-	 *  @brief Resets the SDK's cache completely - all user settings will be erased.
-	 *
-	 *  @note This includes messages that have been read, icon images, assets, etc. DO NOT USE LIGHTLY! If you're having an issue that only this seems to solve, please contact us immediately : app-support@appsfire.com
-	 */
-	[System.Obsolete]
-	public static void ResetCache()
-	{
-		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			afsdk_resetCache();
 	}
 	
 }

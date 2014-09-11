@@ -154,18 +154,6 @@ bool afsdk_isInitialized() {
 	
 }
 
-void afsdk_pause() {
-	
-	[AppsfireEngageSDK pause];
-	
-}
-
-void afsdk_resume() {
-	
-	[AppsfireEngageSDK resume];
-	
-}
-
 void afsdk_handleBadgeCountLocally(bool handleLocally) {
 	
 	[AppsfireEngageSDK handleBadgeCountLocally:handleLocally];
@@ -261,24 +249,6 @@ void afsdk_showFeedbackButton(bool showButton) {
 int afsdk_numberOfPendingNotifications() {
 	
 	return [AppsfireEngageSDK numberOfPendingNotifications];
-	
-}
-
-void afsdk_resetCache() {
-	
-	[AppsfireSDK resetCache];
-	
-}
-
-void afsdkad_prepare() {
-	
-	[AppsfireAdSDK prepare];
-	
-}
-
-bool afsdkad_isInitialized() {
-	
-	return [AppsfireSDK isInitialized];
 	
 }
 

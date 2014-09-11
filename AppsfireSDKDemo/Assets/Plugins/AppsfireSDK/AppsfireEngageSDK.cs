@@ -29,12 +29,6 @@ public class AppsfireEngageSDK : MonoBehaviour {
 	/* Interface to native implementation */
 	
 	[DllImport ("__Internal")]
-	private static extern void afsdk_pause();
-	
-	[DllImport ("__Internal")]
-	private static extern void afsdk_resume();
-	
-	[DllImport ("__Internal")]
 	private static extern void afsdk_handleBadgeCountLocally(bool handleLocally);
 
 	[DllImport ("__Internal")]
@@ -225,26 +219,6 @@ public class AppsfireEngageSDK : MonoBehaviour {
 		if (Application.platform == RuntimePlatform.IPhonePlayer)
 			return afsdk_numberOfPendingNotifications();
 		return 0;
-	}
-	
-	/*!
-	 *  @brief Pause any refresh timer.
-	 */
-	[System.Obsolete]
-	public static void Pause()
-	{
-		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			afsdk_pause();
-	}
-		
-	/*!
-	 *  @brief Resume any refresh timer.
-	 */
-	[System.Obsolete]
-	public static void Resume()
-	{
-		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			afsdk_resume();
 	}
 	
 }

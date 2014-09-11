@@ -26,11 +26,8 @@ extern "C" {
 	void afsdk_iniAndSetCallbackHandler(const char* handlerName);
 	bool afsdk_connectWithAPIKey(const char* apikey, AFSDKFeature features);
 	bool afsdk_isInitialized();
-	void afsdk_resetCache();
 	
 	// engage
-	void afsdk_pause();
-	void afsdk_resume();
 	void afsdk_handleBadgeCountLocally(bool handleLocally);
 	void afsdk_handleBadgeCountLocallyAndRemotely(bool handleLocallyAndRemotely);
 	bool afsdk_presentPanelForContentAndStyle(AFSDKPanelContent content, AFSDKPanelStyle style);
@@ -44,8 +41,6 @@ extern "C" {
 	int afsdk_numberOfPendingNotifications();
 	
 	// advertising
-	void afsdkad_prepare();
-	bool afsdkad_isInitialized();
 	void afsdkad_setUseInAppDownloadWhenPossible(bool use);
 	void afsdkad_setDebugModeEnabled(bool use);
 	void afsdkad_requestModalAd(AFAdSDKModalType modalType);
