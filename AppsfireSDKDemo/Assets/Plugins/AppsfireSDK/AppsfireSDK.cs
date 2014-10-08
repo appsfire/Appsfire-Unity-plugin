@@ -15,7 +15,7 @@ public class AppsfireSDK : MonoBehaviour {
 	/* Interface to native implementation */
 	
 	[DllImport ("__Internal")]
-	private static extern bool afsdk_connectWithAPIKey(string apikey, AFSDKFeature features);
+	private static extern bool afsdk_connectWithAPIKey(string sdktoken, string secretkey, AFSDKFeature features);
 	
 	[DllImport ("__Internal")]
 	private static extern bool afsdk_isInitialized();
@@ -27,10 +27,10 @@ public class AppsfireSDK : MonoBehaviour {
 	 *
 	 *  @return `YES` if no error was detected, `NO` if a problem occured (likely due to the key).
 	 */
-	public static bool ConnectWithAPIKey(string apikey, AFSDKFeature features)
+	public static bool ConnectWithSDKTokenAndSecretKey(string sdktoken, string secretkey, AFSDKFeature features)
 	{
 		if (Application.platform == RuntimePlatform.IPhonePlayer)
-			return afsdk_connectWithAPIKey(apikey, features);
+			return afsdk_connectWithAPIKey(sdktoken, secretkey, features);
 		return false;
 	}
 	

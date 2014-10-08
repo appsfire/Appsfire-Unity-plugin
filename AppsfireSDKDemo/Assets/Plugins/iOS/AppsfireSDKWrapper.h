@@ -24,7 +24,7 @@ extern "C" {
 	
 	// general
 	void afsdk_iniAndSetCallbackHandler(const char* handlerName);
-	bool afsdk_connectWithAPIKey(const char* apikey, AFSDKFeature features);
+	bool afsdk_connectWithAPIKey(const char* sdktoken, const char* secretkey, AFSDKFeature features);
 	bool afsdk_isInitialized();
 	
 	// engage

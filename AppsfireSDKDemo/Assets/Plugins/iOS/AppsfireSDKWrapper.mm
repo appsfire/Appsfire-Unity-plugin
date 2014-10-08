@@ -136,15 +136,17 @@ void afsdk_iniAndSetCallbackHandler(const char* handlerName) {
 	
 }
 
-bool afsdk_connectWithAPIKey(const char *apikey, AFSDKFeature features) {
+bool afsdk_connectWithAPIKey(const char* sdktoken, const char* secretkey, AFSDKFeature features) {
 	
-	NSString *apikeyString;
-	
-	//
-	apikeyString = (apikey != NULL) ? [NSString stringWithUTF8String:apikey] : nil;
+	NSString *sdktokenString;
+	NSString *secretkeyString;
 	
 	//
-    return ([AppsfireSDK connectWithSDKToken:apikeyString features:features parameters:nil] == nil);
+	sdktokenString = (sdktoken != NULL) ? [NSString stringWithUTF8String:sdktoken] : nil;
+	secretkeyString = (secretkey != NULL) ? [NSString stringWithUTF8String:secretkey] : nil;
+	
+	//
+    return ([AppsfireSDK connectWithSDKToken:sdktokenString secretKey:secretkeyString features:features parameters:nil] == nil);
 
 }
 

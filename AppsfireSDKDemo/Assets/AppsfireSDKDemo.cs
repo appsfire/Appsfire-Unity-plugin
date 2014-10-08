@@ -71,10 +71,10 @@ public class AppsfireSDKDemo : MonoBehaviour
 		// otherwise, don't forget to comment/remove it before any store submission!!!
 		#warning enable it for testing, disable it for store submission!!
 		AppsfireAdSDK.SetDebugModeEnabled(true);
-								
-		// af sdk - connect with your api key
-		#error please enter your api key here!
-		AppsfireSDK.ConnectWithAPIKey("", AFSDKFeature.AFSDKFeatureEngage | AFSDKFeature.AFSDKFeatureMonetization);
+		
+		// af sdk - connect with your sdk token / secret key
+		#error please enter your sdk token and secret key here!
+		AppsfireSDK.ConnectWithSDKTokenAndSecretKey("", "", AFSDKFeature.AFSDKFeatureEngage | AFSDKFeature.AFSDKFeatureMonetization);
 		
 		// af engage sdk - handle badge count locally and remotely
 		AppsfireEngageSDK.HandleBadgeCountLocallyAndRemotely(true);
