@@ -131,5 +131,6 @@ We're using the projet `XUPorter` to automatically add some frameworks to your X
 When you're implementing the sdk into your project, you can either use XUPorter, or manually add the following frameworks after the build that creates the Xcode projet:
 * Accelerate
 * AdSupport
+* CoreText
 * Security
 * StoreKit

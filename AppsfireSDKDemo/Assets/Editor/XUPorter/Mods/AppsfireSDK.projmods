@@ -1,7 +1,7 @@
 {
     "group": "",
     "libs": [],
-    "frameworks": ["Security.framework", "AdSupport.framework", "Accelerate.framework", "StoreKit.framework"],
+    "frameworks": ["Security.framework", "AdSupport.framework", "Accelerate.framework", "StoreKit.framework", "CoreText.framework"],
     "headerpaths": [],
     "files":   [],
     "folders": [],
