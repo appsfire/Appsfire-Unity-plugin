@@ -8,11 +8,12 @@ using System.IO;
 
 public static class XCodePostProcess
 {
+
 #if UNITY_EDITOR
-	[PostProcessBuild(100)]
+	[PostProcessBuild(999)]
 	public static void OnPostProcessBuild( BuildTarget target, string pathToBuiltProject )
 	{
-		if (target != BuildTarget.iPhone) {
+		if (target != BuildTarget.iOS) {
 			Debug.LogWarning("Target is not iPhone. XCodePostProcess will not run");
 			return;
 		}
@@ -24,6 +25,7 @@ public static class XCodePostProcess
 		// Please pay attention that ALL projmods files in your project folder will be excuted!
 		string[] files = Directory.GetFiles( Application.dataPath, "*.projmods", SearchOption.AllDirectories );
 		foreach( string file in files ) {
+			UnityEngine.Debug.Log("ProjMod File: "+file);
 			project.ApplyMod( file );
 		}
 
@@ -32,6 +34,12 @@ public static class XCodePostProcess
 		
 		// Finally save the xcode project
 		project.Save();
+
 	}
 #endif
+
+	public static void Log(string message)
+	{
+		UnityEngine.Debug.Log("PostProcess: "+message);
+	}
 }

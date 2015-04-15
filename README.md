@@ -1,7 +1,8 @@
 # I] Introduction
-The plugin of Appsfire SDK currently works only for iOS. However its integration shouldn't affect the build on any other platform.
 
-This documentation is a brief introduction to Appsfire SDK for Unity. We recommend you to take a look on the general documentation that you can find in your dashboard. Most of methods were implemented in Unity. If you have a problem during the integration, don't hesitate to contact our product designer called Jonathan at <a href="mailto:jonathan@appsfire.com">jonathan@appsfire.com</a>.
+This documentation is a brief introduction to Appsfire SDK for Unity. We recommend you to take a look on the general documentation that you can find in your dashboard. Most of methods were implemented in Unity. If you have a problem during the integration, don't hesitate to contact us at <a href="mailto:support@appsfire.com">support@appsfire.com</a>.
+
+Although the plugin can be used by most of Unity versions, the demo project requires Unity 5.
 
 We recommend you to read the integration reference documentation that you find at this url <a href="http://docs.appsfire.com/" target="_blank">http://docs.appsfire.com/</a>.
 
@@ -126,9 +127,12 @@ If you don't get any event, it's likely that the prefab isn't used in your proje
 
 # IV] Xcode and frameworks
 
-We're using the projet `XUPorter` to automatically add some frameworks to your Xcode project. If you're building the demo project, it should directly work! (you can find the plugin in /Assets/Editor/XUPorter).
+We're using the project `XUPorter` to automatically add some frameworks to your Xcode project. If you're building the demo project, it should directly work! (you can find the plugin in /Assets/Editor/XUPorter).
+
+Note: It seems that since Unity 5, XUPorter has difficulties adding `AdSupport.framework` after the build of the iOS project. Thus you may have to manually add it to your Xcode after the build.
 
 When you're implementing the sdk into your project, you can either use XUPorter, or manually add the following frameworks after the build that creates the Xcode projet:
+
 * Accelerate
 * AdSupport
 * CoreText

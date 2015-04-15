@@ -79,7 +79,7 @@ public class AppsfireSDKDemo : MonoBehaviour
 		// af engage sdk - handle badge count locally and remotely
 		AppsfireEngageSDK.HandleBadgeCountLocallyAndRemotely(true);
 		#if UNITY_IPHONE
-			NotificationServices.RegisterForRemoteNotificationTypes(RemoteNotificationType.Alert | RemoteNotificationType.Badge | RemoteNotificationType.Sound);
+			UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
 		#endif
 		
 		// af engage sdk - customize background and text colors
